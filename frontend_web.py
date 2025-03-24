@@ -1,8 +1,11 @@
 import streamlit as st
 import requests
 
+base_url = "https://flask-hello-world-neon-nu.vercel.app"
+
 def send_query(user_query):
-    response = requests.post("http://localhost:8000/query", json={"query": user_query})
+    # response = requests.get("http://localhost:8000/query?" + user_query)
+    response = requests.get(base_url + "/query?query=" + user_query)
     if response.status_code == 200:
         response_text = response.json().get("response", "No response")
     else:
@@ -15,6 +18,7 @@ def send_query_with_history(user_query, chat_history):
         combined_query = user_query + " Chat History: " + " ".join([f"{message['sender']}: {message['text']}" for message in chat_history[-5:-1]])
     else:
         combined_query = user_query
+    # TODO: correct this to use GET
     response = requests.post("http://localhost:8000/query", json={"query": combined_query})
     if response.status_code == 200:
         response_text = response.json().get("response", "No response")
